@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from "./api/axios";
 
-function Tasks() {
+function Tasks({selectedUserId = 'all'}) {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -34,12 +34,17 @@ function Tasks() {
     }
   };
 
+  const filteredTasks = selectedUserId === 'all'
+    ? tasks
+    : tasks.filter(t => String(t.userId) === String(selectedUserId));
+
   return (
     <div>
       <h2>Tasks</h2>
       <ul>
-        {tasks.map(task => (
-          <li key={task.id}>
+        {filteredTasks.length === 0 ? (<li>No tasks found.</li>) :
+        filteredTasks.map(task => (
+          <li id={task.userId}>
             <div>{task.title}</div>
             <button onClick={() => tickBox(task.id)}>
               {task.isDone === "loading"
