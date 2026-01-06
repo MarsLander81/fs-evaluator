@@ -22,7 +22,7 @@ namespace TaskManager.API
         public async Task<IActionResult> Get()
         {
             
-            var tasks = await _context.Tasks.ToListAsync();
+            var tasks = await _context.Tasks.OrderBy(t => t.Id).ToListAsync();
             return Ok(tasks);
         }
 
