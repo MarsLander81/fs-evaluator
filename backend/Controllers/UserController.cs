@@ -27,9 +27,25 @@ namespace task_manager_api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] User user)
         {
+            // Check for existing email
+            if (await _context.Users.AnyAsync(u => u.Email == user.Email)) return Conflict("Email already in use.");
+            
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] User updated){
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
+            // Check for email conflict
+            if (await _context.Users.AnyAsync(u => u.Email == updated.Email && u.Id != id)) return Conflict("Email already in use.");
+            
+            user.Email = updated.Email;
+            user.PasswordHash = updated.PasswordHash;
+            await _context.SaveChangesAsync();
+            return Ok(user);
         }
 
         [HttpDelete("{id}")]
