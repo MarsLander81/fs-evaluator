@@ -3,12 +3,17 @@ import api from "./api/axios";
 
 function Tasks({selectedUserId = 'all'}) {
   const [tasks, setTasks] = useState([]);
+  const [taskTitle, setTaskTitle] = useState("");
 
   useEffect(() => {
     api.get('/tasks')
       .then(res => setTasks(res.data))
       .catch(err => console.error(err));
   }, []);
+
+  const inputChange = (event) => {
+    setTaskTitle(event.target.value);
+  };
 
   const tickBox = async (taskId) => {
     const task = tasks.find(t => t.id === taskId);
@@ -46,6 +51,20 @@ function Tasks({selectedUserId = 'all'}) {
     }
   };
 
+  const newTask = async (userId) => {
+    try {
+      const res = await api.post('/tasks', {
+        title: taskTitle,
+        isDone: false,
+        userId: userId
+      });
+      setTasks([...tasks, res.data]);
+      setTaskTitle("");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   const filteredTasks = selectedUserId === 'all'
     ? tasks
     : tasks.filter(t => String(t.userId) === String(selectedUserId));
@@ -53,10 +72,16 @@ function Tasks({selectedUserId = 'all'}) {
   return (
     <div>
       <h2>Tasks</h2>
+      {selectedUserId !== 'all' &&
+        <form id="new-task-form">
+          <input type="text" placeholder="New task title" value={taskTitle} onChange={inputChange}/>
+          <button onClick={() => newTask(selectedUserId)}>+</button>
+        </form>
+      }
       <ul>
         {filteredTasks.length === 0 ? (<li>No tasks found.</li>) :
         filteredTasks.map(task => (
-          <li id={task.userId}>
+          <li key={task.id} id={task.userId}>
             <div>{task.title}</div>
             <button onClick={() => tickBox(task.id)}>
               {task.isDone === "loading"
