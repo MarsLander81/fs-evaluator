@@ -34,6 +34,18 @@ function Tasks({selectedUserId = 'all'}) {
     }
   };
 
+  const deleteTask = async (taskId) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    try {
+      api.delete(`/tasks/${taskId}`);
+      setTasks(tasks.filter(t => t.id !== taskId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const filteredTasks = selectedUserId === 'all'
     ? tasks
     : tasks.filter(t => String(t.userId) === String(selectedUserId));
@@ -52,6 +64,9 @@ function Tasks({selectedUserId = 'all'}) {
                 : task.isDone
                 ? "✅"
                 : "❌"}
+            </button>
+            <button onClick={() => deleteTask(task.id)}>
+              🗑️
             </button>
           </li>
         ))}

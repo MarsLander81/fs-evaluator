@@ -16,10 +16,10 @@ namespace task_manager_api.Controllers
             _context = context;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.OrderBy(u => u.Id).ToListAsync();
             return Ok(user);
         }
 
