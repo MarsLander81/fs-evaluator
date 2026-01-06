@@ -1,0 +1,47 @@
+{
+	"info": {
+		"_postman_id": "8ebfddfb-1847-4556-a05a-14f9be00079e",
+		"name": "FS-Evaluation Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16171701"
+	},
+	"item": [
+		{
+			"name": "Post User",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"JamesArray.com\",\r\n  \"passwordHash\": \"root\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5215/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5215",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

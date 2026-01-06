@@ -15,6 +15,20 @@ function Tasks({selectedUserId = 'all'}) {
     setTaskTitle(event.target.value);
   };
 
+  const newTask = async (userId) => {
+    try {
+      const res = await api.post('/tasks', {
+        title: taskTitle,
+        isDone: false,
+        userId: userId
+      });
+      setTasks([...tasks, res.data]);
+      setTaskTitle("");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   const tickBox = async (taskId) => {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
@@ -51,20 +65,6 @@ function Tasks({selectedUserId = 'all'}) {
     }
   };
 
-  const newTask = async (userId) => {
-    try {
-      const res = await api.post('/tasks', {
-        title: taskTitle,
-        isDone: false,
-        userId: userId
-      });
-      setTasks([...tasks, res.data]);
-      setTaskTitle("");
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   const filteredTasks = selectedUserId === 'all'
     ? tasks
     : tasks.filter(t => String(t.userId) === String(selectedUserId));
@@ -75,7 +75,7 @@ function Tasks({selectedUserId = 'all'}) {
       {selectedUserId !== 'all' &&
         <form id="new-task-form">
           <input type="text" placeholder="New task title" value={taskTitle} onChange={inputChange}/>
-          <button onClick={() => newTask(selectedUserId)}>+</button>
+          <button type="button" onClick={() => newTask(selectedUserId)}>+</button>
         </form>
       }
       <ul>
